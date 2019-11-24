@@ -320,7 +320,7 @@ bool CommandLineInterface::processInput()
         if (m_args.count(g_argInputFile))
             m_compiler->setRemappings(m_remappings);
         m_compiler->setSources(m_sourceCodes);
-        bool successful = m_compiler->parse();
+        bool successful = m_compiler->parseAndAnalyze();
         if(!successful){
             serr() << "parsing error!!"<<std::endl;
 
@@ -398,6 +398,7 @@ void CommandLineInterface::handleAst()
     for (auto const& sourceCode: m_sourceCodes)
     {
         sout() << endl << "======= " << sourceCode.first << " =======" << endl;
+        sout() << sourceCode.second;
             ASTPrinter printer(m_compiler->ast(sourceCode.first), sourceCode.second);
             printer.print(sout());
     }
