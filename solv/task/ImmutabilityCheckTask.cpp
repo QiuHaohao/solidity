@@ -4,6 +4,8 @@
 
 #include "ImmutabilityCheckTask.h"
 
+const string ImmutabilityCheckTask::taskName = "immutable";
+
 void ImmutabilityCheckTask::execute() {
     return;
 }

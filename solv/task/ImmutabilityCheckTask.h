@@ -11,10 +11,10 @@
 
 class ImmutabilityCheckTask: ITask {
 public:
-    static string taskName = "immutable";
-    ImmutabilityCheckTask(SourceUnit const& _ast, ASTNode const& _target);
-    void execute() {}
-    static ImmutabilityCheckTask* Create(SourceUnit const& _ast, ASTNode const& _target) {
+    static const string taskName;
+    ImmutabilityCheckTask(SourceUnit const& _ast, ASTNode const& _target):ITask(_ast, _target){}
+    void execute();
+    static ITask* Create(SourceUnit const& _ast, ASTNode const& _target) {
         return new ImmutabilityCheckTask(_ast, _target);
     }
 };

@@ -6,7 +6,7 @@
 #include "ImmutabilityCheckTask.h"
 
 TaskFactory::TaskFactory() {
-    Register(&ImmutabilityCheckTask::taskName, &ImmutabilityCheckTask::Create);
+    Register(ImmutabilityCheckTask::taskName, &ImmutabilityCheckTask::Create);
 }
 
 void TaskFactory::Register(const string &taskName, CreateTaskFn fnCreate) {

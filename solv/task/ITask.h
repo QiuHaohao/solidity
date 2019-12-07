@@ -15,6 +15,13 @@ public:
     ITask(SourceUnit const& _ast, ASTNode const& _target): m_ast(_ast), m_target(_target) {};
     static string taskName;
     virtual void execute() = 0;
+    const SourceUnit &getMAst() const {
+        return m_ast;
+    }
+
+    const ASTNode &getMTarget() const {
+        return m_target;
+    }
 
 private:
     SourceUnit const&  m_ast;
