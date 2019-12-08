@@ -13,7 +13,7 @@ void TaskFactory::Register(const string &taskName, CreateTaskFn fnCreate) {
     m_FactoryMap[taskName] = fnCreate;
 }
 
-ITask *TaskFactory::CreateTask(const string &taskName, SourceUnit const& _ast, ASTNode const& _target) {
+ITask *TaskFactory::CreateTask(const string &taskName, const ASTPointer<SourceUnit> _ast, const ASTPointer<ASTNode> _target) {
     TaskFactoryMap::iterator it = m_FactoryMap.find(taskName);
     if ( it != m_FactoryMap.end() ) {
         return it->second(_ast, _target);

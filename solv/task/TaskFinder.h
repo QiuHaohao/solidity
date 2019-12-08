@@ -17,11 +17,11 @@
 
 class TaskFinder:ASTConstVisitor {
 public:
-    vector<ITask> findTasks(const SourceUnit& ast, const string& source);
+    vector<ITask> findTasks(const ASTPointer<SourceUnit> _ast, const string& source);
 private:
     typedef vector<pair<string, int>> Annotations;
     Annotations findAnnotations(const string& source);
-    vector<ASTNode> findTargets(const SourceUnit& ast, Annotations annotations);
+    vector<ASTNode> findTargets(const ASTPointer<SourceUnit> _ast, Annotations annotations);
 };
 
 

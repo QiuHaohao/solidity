@@ -12,9 +12,9 @@
 class ImmutabilityCheckTask: ITask {
 public:
     static const string taskName;
-    ImmutabilityCheckTask(SourceUnit const& _ast, ASTNode const& _target):ITask(_ast, _target){}
+    ImmutabilityCheckTask(const ASTPointer<SourceUnit> _ast, const ASTPointer<ASTNode> _target):ITask(_ast, _target){}
     void execute();
-    static ITask* Create(SourceUnit const& _ast, ASTNode const& _target) {
+    static ITask* Create(const ASTPointer<SourceUnit> _ast, const ASTPointer<ASTNode> _target) {
         return new ImmutabilityCheckTask(_ast, _target);
     }
 };

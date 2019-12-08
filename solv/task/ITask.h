@@ -12,20 +12,20 @@ using namespace dev::solidity;
 
 class ITask {
 public:
-    ITask(SourceUnit const& _ast, ASTNode const& _target): m_ast(_ast), m_target(_target) {};
-    static string taskName;
+    ITask(const ASTPointer<SourceUnit> _ast, const ASTPointer<ASTNode> _target): m_ast(_ast), m_target(_target) {};
+    static const string taskName;
     virtual void execute() = 0;
-    const SourceUnit &getMAst() const {
+    static ITask* Create(const ASTPointer<SourceUnit> _ast, const ASTPointer<ASTNode> _target);
+    [[nodiscard]] const ASTPointer<SourceUnit> getMAst() const {
         return m_ast;
     }
 
-    const ASTNode &getMTarget() const {
+    [[nodiscard]] const ASTPointer<ASTNode> getMTarget() const {
         return m_target;
     }
-
 private:
-    SourceUnit const&  m_ast;
-    ASTNode const& m_target;
+    const ASTPointer<SourceUnit>  m_ast;
+    const ASTPointer<ASTNode> m_target;
 };
 
 
