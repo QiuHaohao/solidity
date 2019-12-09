@@ -5,6 +5,7 @@
 #ifndef SOLIDITY_TASKFINDER_H
 #define SOLIDITY_TASKFINDER_H
 
+#include <regex>
 #include <string>
 #include <vector>
 #include <utility>
@@ -15,13 +16,18 @@
 #include "TaskFactory.h"
 #include "ITask.h"
 
+struct Annotation {
+    string type;
+    int position;
+    Annotation(string _type, int _position) : type(_type), position(_position) {}
+};
+
 class TaskFinder:ASTConstVisitor {
 public:
+    static const regex annotationPattern;
     vector<ITask> findTasks(const ASTPointer<SourceUnit> _ast, const string& source);
-private:
-    typedef vector<pair<string, int>> Annotations;
-    Annotations findAnnotations(const string& source);
-    vector<ASTNode> findTargets(const ASTPointer<SourceUnit> _ast, Annotations annotations);
+    vector<Annotation> findAnnotations(const string& source);
+    vector<ASTNode> findTargets(const ASTPointer<SourceUnit> _ast, vector<Annotation> annotations);
 };
 
 
