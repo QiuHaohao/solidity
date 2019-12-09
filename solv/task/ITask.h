@@ -14,7 +14,7 @@ class ITask {
 public:
     ITask(const ASTPointer<SourceUnit> _ast, const ASTPointer<ASTNode> _target): m_ast(_ast), m_target(_target) {};
     static const string taskName;
-    virtual void execute() = 0;
+    virtual void execute() { return; };
     static ITask* Create(const ASTPointer<SourceUnit> _ast, const ASTPointer<ASTNode> _target);
     [[nodiscard]] const ASTPointer<SourceUnit> getMAst() const {
         return m_ast;
