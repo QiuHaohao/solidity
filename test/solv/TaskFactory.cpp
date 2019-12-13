@@ -20,14 +20,14 @@ BOOST_AUTO_TEST_SUITE(TestTaskFactory)
 BOOST_AUTO_TEST_CASE(test_create_non_existent_task)
 {
     TaskFactory* tf = TaskFactory::Get();
-    ITask* task = tf->CreateTask("No such task", ASTPointer<SourceUnit>(), ASTPointer<ASTNode>());
+    ITask* task = tf->CreateTask("No such task", nullptr, nullptr);
     BOOST_CHECK_EQUAL(task, nullptr);
 }
 
 BOOST_AUTO_TEST_CASE(test_create_immutability_check_task)
 {
     TaskFactory* tf = TaskFactory::Get();
-    ITask* task = tf->CreateTask(ImmutabilityCheckTask::taskName, ASTPointer<SourceUnit>(), ASTPointer<ASTNode>());
+    ITask* task = tf->CreateTask(ImmutabilityCheckTask::taskName, nullptr, nullptr);
     BOOST_CHECK_NE(task, nullptr);
     ImmutabilityCheckTask* icTask = (ImmutabilityCheckTask*)(task);
     BOOST_CHECK_EQUAL(icTask->taskName, ImmutabilityCheckTask::taskName);

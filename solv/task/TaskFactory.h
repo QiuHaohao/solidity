@@ -9,7 +9,7 @@
 #ifndef SOLIDITY_TASKFACTORY_H
 #define SOLIDITY_TASKFACTORY_H
 
-typedef ITask* (*CreateTaskFn)(const ASTPointer<SourceUnit>, const ASTPointer<ASTNode>);
+typedef ITask* (*CreateTaskFn)(const SourceUnit *, const ASTNode *);
 
 using namespace std;
 class TaskFactory {
@@ -30,7 +30,7 @@ public:
     }
 
     void Register(const string &taskName, CreateTaskFn fnCreate);
-    ITask *CreateTask(const string &taskName, const ASTPointer<SourceUnit> _ast, const ASTPointer<ASTNode> _target);
+    ITask *CreateTask(const string &taskName, const SourceUnit * _ast, const ASTNode * _target);
 };
 
 

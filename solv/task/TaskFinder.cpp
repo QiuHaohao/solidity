@@ -8,7 +8,7 @@
 
 using namespace std;
 
-const regex TaskFinder::annotationPattern("//@verifier ([a-z- ]+)");
+const regex TaskFinder::annotationPattern("(?:\n|^).+//@verifier ([a-z- ]+)");
 
 vector<Annotation> TaskFinder::findAnnotations(const string& source) {
     vector<Annotation> result;
@@ -21,12 +21,14 @@ vector<Annotation> TaskFinder::findAnnotations(const string& source) {
         if (m.size() == 2) {
             string matched = m[0];
             string captured = m[1];
-            int this_delta_position = m.position();
-            int this_position = current_position + this_delta_position;
-            Annotation this_annotation = Annotation(captured, this_position);
+            // + 1 because don't need the first line change
+            int this_delta_position = m.position() + 1;
+            int this_line_start = current_position + this_delta_position;
+            int this_line_end = this_line_start + matched.length();
+            Annotation this_annotation = Annotation(captured, this_line_start, this_line_end);
             result.push_back(this_annotation);
             s = m.suffix().str();
-            current_position += this_delta_position + matched.length();
+            current_position = this_line_end;
         }
     }
     return result;
