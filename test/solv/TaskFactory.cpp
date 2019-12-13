@@ -2,7 +2,7 @@
 // Created by Qiu Haoze on 7/12/19.
 //
 
-#include <solv/task/ImmutabilityCheckTask.h>
+#include <solv/task/ImmutabilityCheck/ImmutabilityCheckTask.h>
 #include <solv/task/TaskFactory.h>
 
 #include <test/Options.h>

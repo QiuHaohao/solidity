@@ -7,15 +7,15 @@ set(
 add_library(
         libsolv
         task/ITask.h
-        task/ImmutabilityCheckTask.cpp
-        task/ImmutabilityCheckTask.h
+        task/ImmutabilityCheck/ImmutabilityCheckTask.cpp
+        task/ImmutabilityCheck/ImmutabilityCheckTask.h
         task/TaskFactory.cpp
         task/TaskFactory.h
         task/TaskFinder.cpp
         task/TaskFinder.h
         task/TaskLocator.h
-        task/ImmutabilityCheckTaskLocator.h
-        task/ImmutabilityCheckTaskLocator.cpp
+        task/ImmutabilityCheck/ImmutabilityCheckTaskLocator.h
+        task/ImmutabilityCheck/ImmutabilityCheckTaskLocator.cpp
 )
 add_executable(solv ${sources})
 target_link_libraries(libsolv PRIVATE solidity Boost::boost Boost::program_options)

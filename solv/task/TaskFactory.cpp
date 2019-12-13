@@ -3,7 +3,7 @@
 //
 
 #include "TaskFactory.h"
-#include "ImmutabilityCheckTask.h"
+#include "solv/task/ImmutabilityCheck/ImmutabilityCheckTask.h"
 
 TaskFactory::TaskFactory() {
     Register(ImmutabilityCheckTask::taskName, &ImmutabilityCheckTask::Create);

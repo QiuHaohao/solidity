@@ -11,7 +11,7 @@
 #include <liblangutil/SourceLocation.h>
 
 #include <solv/task/TaskFinder.h>
-#include <solv/task/ImmutabilityCheckTaskLocator.h>
+#include <solv/task/ImmutabilityCheck/ImmutabilityCheckTaskLocator.h>
 
 #include <test/Options.h>
 
@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_CASE(test_locate_immutability_check_task)
     TaskFinder* tf = new TaskFinder();
     vector<Annotation> ants = tf->findAnnotations(source);
     ASTPointer<SourceUnit> _sourceUnit = parseText(source);
-    const SourceUnit * sourceUnit = _sourceUnit;
+    const SourceUnit * sourceUnit = _sourceUnit.get();
 
     BOOST_CHECK_EQUAL(ants.size(), 2);
     if (ants.size() == 2) {
@@ -83,7 +83,6 @@ BOOST_AUTO_TEST_CASE(test_locate_immutability_check_task)
         ImmutabilityCheckTaskLocator* secondLocator = new ImmutabilityCheckTaskLocator(sourceUnit, ants[1].m_line_location);
         const VariableDeclaration * secondTarget = secondLocator->locate();
         BOOST_CHECK_EQUAL(secondTarget->id(), 5);
-
     }
 }
 

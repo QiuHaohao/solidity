@@ -2,8 +2,8 @@
 // Created by Qiu Haoze on 24/11/19.
 //
 
-#include "ITask.h"
-#include "TaskFactory.h"
+#include "solv/task/ITask.h"
+#include "solv/task/TaskFactory.h"
 
 #ifndef SOLIDITY_IMMUTABILITYCHECKTASK_H
 #define SOLIDITY_IMMUTABILITYCHECKTASK_H
