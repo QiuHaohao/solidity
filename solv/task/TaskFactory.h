@@ -1,24 +1,37 @@
 //
 // Created by Qiu Haoze on 24/11/19.
 //
-
-#include <map>
-#include <libsolidity/ast/AST.h>
-#include "ITask.h"
-
 #ifndef SOLIDITY_TASKFACTORY_H
 #define SOLIDITY_TASKFACTORY_H
 
-typedef ITask* (*CreateTaskFn)(const SourceUnit *, const ASTNode *);
+#include <map>
+#include <string>
 
-using namespace std;
+#include <liblangutil/SourceLocation.h>
+#include <libsolidity/ast/AST.h>
+
+#include "ITask.h"
+#include "TaskAnnotation.h"
+
+
+namespace dev
+{
+namespace solidity
+{
+namespace verifier
+{
+
+typedef ITask *(*CreateTaskFn)(const SourceUnit *, const langutil::SourceLocation);
+
 class TaskFactory {
 private:
     TaskFactory();
-    TaskFactory(const TaskFactory &) { }
+
+    TaskFactory(const TaskFactory &) {}
+
     TaskFactory &operator=(const TaskFactory &) { return *this; }
 
-    typedef map<string, CreateTaskFn> TaskFactoryMap;
+    typedef std::map<std::string, CreateTaskFn> TaskFactoryMap;
     TaskFactoryMap m_FactoryMap;
 
 public:
@@ -29,9 +42,13 @@ public:
         return &instance;
     }
 
-    void Register(const string &taskName, CreateTaskFn fnCreate);
-    ITask *CreateTask(const string &taskName, const SourceUnit * _ast, const ASTNode * _target);
+    void Register(const std::string &taskName, CreateTaskFn fnCreate);
+
+    ITask *CreateTask(const TaskAnnotation *annotation, const SourceUnit *_ast);
 };
 
+}
+}
+}
 
 #endif //SOLIDITY_TASKFACTORY_H

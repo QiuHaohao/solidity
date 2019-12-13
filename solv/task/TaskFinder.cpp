@@ -8,10 +8,17 @@
 
 using namespace std;
 
+namespace dev
+{
+namespace solidity
+{
+namespace verifier
+{
+
 const regex TaskFinder::annotationPattern("(?:\n|^).+//@verifier ([a-z- ]+)");
 
-vector<Annotation> TaskFinder::findAnnotations(const string& source) {
-    vector<Annotation> result;
+vector<TaskAnnotation> TaskFinder::findAnnotations(const string& source) {
+    vector<TaskAnnotation> result;
     int current_position = 0;
     string s = source;
     smatch m;
@@ -25,11 +32,15 @@ vector<Annotation> TaskFinder::findAnnotations(const string& source) {
             int this_delta_position = m.position() + 1;
             int this_line_start = current_position + this_delta_position;
             int this_line_end = this_line_start + matched.length();
-            Annotation this_annotation = Annotation(captured, this_line_start, this_line_end);
+            TaskAnnotation this_annotation = TaskAnnotation(captured, this_line_start, this_line_end);
             result.push_back(this_annotation);
             s = m.suffix().str();
             current_position = this_line_end;
         }
     }
     return result;
+}
+
+}
+}
 }

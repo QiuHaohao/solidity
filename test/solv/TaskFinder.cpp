@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_SUITE(TestTaskFinder)
 BOOST_AUTO_TEST_CASE(test_find_annotations)
 {
     TaskFinder* tf = new TaskFinder();
-    vector<Annotation> ants = tf->findAnnotations(source);
+    vector<TaskAnnotation> ants = tf->findAnnotations(source);
     // one from 49 to 83, the other one from 84 to 122
     BOOST_CHECK_EQUAL(ants.size(), 2);
     if (ants.size() == 2) {
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(test_find_annotations)
 BOOST_AUTO_TEST_CASE(test_locate_immutability_check_task)
 {
     TaskFinder* tf = new TaskFinder();
-    vector<Annotation> ants = tf->findAnnotations(source);
+    vector<TaskAnnotation> ants = tf->findAnnotations(source);
     ASTPointer<SourceUnit> _sourceUnit = parseText(source);
     const SourceUnit * sourceUnit = _sourceUnit.get();
 

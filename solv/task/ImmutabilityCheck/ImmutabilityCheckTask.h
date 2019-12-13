@@ -2,22 +2,34 @@
 // Created by Qiu Haoze on 24/11/19.
 //
 
-#include "solv/task/ITask.h"
-#include "solv/task/TaskFactory.h"
 
 #ifndef SOLIDITY_IMMUTABILITYCHECKTASK_H
 #define SOLIDITY_IMMUTABILITYCHECKTASK_H
 
+#include <liblangutil/SourceLocation.h>
 
-class ImmutabilityCheckTask: ITask {
+#include "solv/task/ITask.h"
+#include "solv/task/TaskFactory.h"
+
+namespace dev
+{
+namespace solidity
+{
+namespace verifier
+{
+
+class ImmutabilityCheckTask : ITask {
 public:
-    static const string taskName;
-    ImmutabilityCheckTask(const SourceUnit * _ast, const ASTNode * _target):ITask(_ast, _target){}
+    static const std::string taskName;
+
+    ImmutabilityCheckTask(const SourceUnit *_ast, const ASTNode *_target) : ITask(_ast, _target) {}
+
     void execute();
-    static ITask* Create(const SourceUnit * _ast, const ASTNode * _target) {
-        return new ImmutabilityCheckTask(_ast, _target);
-    }
+
+    static ITask *Create(const SourceUnit *_ast, const langutil::SourceLocation _line_location);
 };
 
-
+}
+}
+}
 #endif //SOLIDITY_IMMUTABILITYCHECKTASK_H
