@@ -16,6 +16,9 @@ namespace verifier
 class ITask {
 public:
     ITask(const SourceUnit *_ast, const ASTNode *_target) : m_ast(_ast), m_target(_target) {};
+    virtual ~ITask() {
+        delete m_target;
+    };
     static const std::string taskName;
 
     virtual void execute() { return; };

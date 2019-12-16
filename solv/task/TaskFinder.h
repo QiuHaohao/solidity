@@ -27,7 +27,8 @@ class TaskFinder : ASTConstVisitor {
 public:
     static const std::regex annotationPattern;
 
-    std::vector<TaskAnnotation> findAnnotations(const std::string &source);
+    static std::vector<ITask*> findTasks(const std::string &source, const SourceUnit *_ast);
+    static std::vector<TaskAnnotation> findAnnotations(const std::string &source);
 };
 
 }

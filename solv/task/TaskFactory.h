@@ -44,7 +44,7 @@ public:
 
     void Register(const std::string &taskName, CreateTaskFn fnCreate);
 
-    ITask *CreateTask(const TaskAnnotation *annotation, const SourceUnit *_ast);
+    ITask *CreateTask(const TaskAnnotation annotation, const SourceUnit *_ast);
 };
 
 }

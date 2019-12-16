@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "TaskFinder.h"
+#include "TaskFactory.h"
 
 using namespace std;
 
@@ -23,7 +24,7 @@ vector<TaskAnnotation> TaskFinder::findAnnotations(const string& source) {
     string s = source;
     smatch m;
     regex re = annotationPattern;
-    while (std::regex_search (s,m,re)) {
+    while (regex_search (s,m,re)) {
         // if there is only one captured
         if (m.size() == 2) {
             string matched = m[0];
@@ -38,6 +39,17 @@ vector<TaskAnnotation> TaskFinder::findAnnotations(const string& source) {
             current_position = this_line_end;
         }
     }
+    return result;
+}
+
+vector<ITask*> TaskFinder::findTasks(const string& source, const SourceUnit *_ast) {
+    vector<TaskAnnotation> ants = findAnnotations(source);
+    vector<ITask*> result;
+
+    for(auto const& a: ants) {
+        result.push_back(TaskFactory::Get()->CreateTask(a, _ast));
+    }
+
     return result;
 }
 

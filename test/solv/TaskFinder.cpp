@@ -11,6 +11,7 @@
 #include <liblangutil/SourceLocation.h>
 
 #include <solv/task/TaskFinder.h>
+#include <solv/task/ImmutabilityCheck/ImmutabilityCheckTask.h>
 #include <solv/task/ImmutabilityCheck/ImmutabilityCheckTaskLocator.h>
 
 #include <test/Options.h>
@@ -19,6 +20,10 @@ using namespace std;
 using namespace langutil;
 
 namespace dev
+{
+namespace solidity
+{
+namespace verifier
 {
 namespace test
 {
@@ -36,7 +41,7 @@ ASTPointer<SourceUnit> parseText(string const &_source) {
 string source = "pragma solidity >=0.4.22 <0.6.0;\n"    // 33 chars
                 "contract Bank {\n"                     // 16 chars
                 "    uint a; //@verifier immutable\n"   // 34 chars (first one starts at 33 + 16 = 49, ends at 49 + 34 = 83)
-                "    uint b; //@verifier somethingelse\n"   // 38 chars (first one starts at 84, ends at 84 + 38 = 122)
+                "    uint b; //@verifier immutable\n"   // 38 chars (first one starts at 84, ends at 84 + 38 = 122)
                 "\n"
                 "    function add(uint x, uint y) public returns (uint r, uint s){\n"
                 "        return (r,s);\n"
@@ -50,60 +55,45 @@ string source = "pragma solidity >=0.4.22 <0.6.0;\n"    // 33 chars
 
 BOOST_AUTO_TEST_SUITE(TestTaskFinder)
 
-BOOST_AUTO_TEST_CASE(test_find_annotations)
-{
-    TaskFinder* tf = new TaskFinder();
-    vector<TaskAnnotation> ants = tf->findAnnotations(source);
-    // one from 49 to 83, the other one from 84 to 122
-    BOOST_CHECK_EQUAL(ants.size(), 2);
-    if (ants.size() == 2) {
-        BOOST_CHECK_EQUAL(ants[0].m_type, "immutable");
-        BOOST_CHECK_EQUAL(ants[0].m_line_location.start, 49);
-        BOOST_CHECK_EQUAL(ants[0].m_line_location.end, 83);
-        BOOST_CHECK_EQUAL(ants[1].m_type, "somethingelse");
-        BOOST_CHECK_EQUAL(ants[1].m_line_location.start, 84);
-        BOOST_CHECK_EQUAL(ants[1].m_line_location.end, 122);
-    }
+BOOST_AUTO_TEST_CASE(test_find_targets) {
+        vector<TaskAnnotation> ants = TaskFinder::findAnnotations(source);
+
+        // one from 49 to 83, the other one from 84 to 122
+        BOOST_CHECK_EQUAL(ants.size(), 2);
+
+        if (ants.size() == 2) {
+            BOOST_CHECK_EQUAL(ants[0].m_type, "immutable");
+            BOOST_CHECK_EQUAL(ants[0].m_line_location.start, 49);
+            BOOST_CHECK_EQUAL(ants[0].m_line_location.end, 83);
+            BOOST_CHECK_EQUAL(ants[1].m_type, "immutable");
+            BOOST_CHECK_EQUAL(ants[1].m_line_location.start, 84);
+            BOOST_CHECK_EQUAL(ants[1].m_line_location.end, 118);
+        }
+
+        ASTPointer<SourceUnit> _sourceUnit = parseText(source);
+        const SourceUnit * sourceUnit = _sourceUnit.get();
+
+        if (ants.size() == 2) {
+            // check the first one
+            ImmutabilityCheckTaskLocator* firstLocator = new ImmutabilityCheckTaskLocator(sourceUnit, ants[0].m_line_location);
+            const VariableDeclaration * firstTarget = firstLocator->locate();
+            BOOST_CHECK_EQUAL(firstTarget->id(), 3);
+            // check the second one
+            ImmutabilityCheckTaskLocator* secondLocator = new ImmutabilityCheckTaskLocator(sourceUnit, ants[1].m_line_location);
+            const VariableDeclaration * secondTarget = secondLocator->locate();
+            BOOST_CHECK_EQUAL(secondTarget->id(), 5);
+        }
 }
 
-BOOST_AUTO_TEST_CASE(test_locate_immutability_check_task)
-{
-    TaskFinder* tf = new TaskFinder();
-    vector<TaskAnnotation> ants = tf->findAnnotations(source);
+BOOST_AUTO_TEST_CASE(test_find_tasks) {
     ASTPointer<SourceUnit> _sourceUnit = parseText(source);
     const SourceUnit * sourceUnit = _sourceUnit.get();
-
-    BOOST_CHECK_EQUAL(ants.size(), 2);
-    if (ants.size() == 2) {
-        // check the first one
-        ImmutabilityCheckTaskLocator* firstLocator = new ImmutabilityCheckTaskLocator(sourceUnit, ants[0].m_line_location);
-        const VariableDeclaration * firstTarget = firstLocator->locate();
-        BOOST_CHECK_EQUAL(firstTarget->id(), 3);
-        // check the second one
-        ImmutabilityCheckTaskLocator* secondLocator = new ImmutabilityCheckTaskLocator(sourceUnit, ants[1].m_line_location);
-        const VariableDeclaration * secondTarget = secondLocator->locate();
-        BOOST_CHECK_EQUAL(secondTarget->id(), 5);
-    }
-}
-
-BOOST_AUTO_TEST_CASE(test_find_targets)
-{
-    // It actually has all the SourceLocation's in place
-//    const SourceUnit * sourceUnit = parseText(source);
-//    SourceLocation location = sourceUnit->location();
-//
-//    ASTPrinter printer(*sourceUnit, source);
-//    printer.print(cout);
-
-//    cout << "Source: " << location.text() << endl;
-//    cout << "Start: " << location.start << endl;
-//    cout << "End: " << location.end << endl;
-//    cout << location << endl;
-
-
+    vector<ITask*> tasks = TaskFinder::findTasks(source, sourceUnit);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
 
+}
+}
 }
 }

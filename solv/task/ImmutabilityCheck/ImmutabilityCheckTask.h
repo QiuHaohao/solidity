@@ -24,7 +24,7 @@ public:
 
     ImmutabilityCheckTask(const SourceUnit *_ast, const ASTNode *_target) : ITask(_ast, _target) {}
 
-    void execute();
+    virtual void execute();
 
     static ITask *Create(const SourceUnit *_ast, const langutil::SourceLocation _line_location);
 };
