@@ -7,7 +7,6 @@
 #include <liblangutil/ErrorReporter.h>
 #include <liblangutil/Scanner.h>
 
-#include <libsolidity/ast/ASTPrinter.h>
 #include <liblangutil/SourceLocation.h>
 
 #include <solv/task/TaskFinder.h>
@@ -58,7 +57,7 @@ BOOST_AUTO_TEST_SUITE(TestTaskFinder)
 BOOST_AUTO_TEST_CASE(test_find_targets) {
         vector<TaskAnnotation> ants = TaskFinder::findAnnotations(source);
 
-        // one from 49 to 83, the other one from 84 to 122
+        // one from 49 to 83, another one from 84 to 122
         BOOST_CHECK_EQUAL(ants.size(), 2);
 
         if (ants.size() == 2) {
@@ -89,6 +88,10 @@ BOOST_AUTO_TEST_CASE(test_find_tasks) {
     ASTPointer<SourceUnit> _sourceUnit = parseText(source);
     const SourceUnit * sourceUnit = _sourceUnit.get();
     vector<ITask*> tasks = TaskFinder::findTasks(source, sourceUnit);
+    if (tasks.size() == 2) {
+        BOOST_CHECK(dynamic_cast<ImmutabilityCheckTask*>((ImmutabilityCheckTask*) tasks[0]));
+        BOOST_CHECK(dynamic_cast<ImmutabilityCheckTask*>((ImmutabilityCheckTask*) tasks[1]));
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
