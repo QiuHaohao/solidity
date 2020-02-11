@@ -15,7 +15,9 @@ namespace solidity
 namespace verifier {
 
 class TaskLocator : public ASTConstVisitor {
-
+// Given an ast and a SourceLocation of a line,
+// TaskLocator finds the ASTNode of the right type that is
+// in the line.
 public:
     TaskLocator(
             const SourceUnit *_ast, langutil::SourceLocation const &_line_location
