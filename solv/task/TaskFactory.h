@@ -21,7 +21,7 @@ namespace solidity
 namespace verifier
 {
 
-typedef ITask *(*CreateTaskFn)(const SourceUnit *, const langutil::SourceLocation);
+typedef ITask *(*CreateTaskFn)(const SourceUnit& , const langutil::SourceLocation);
 
 class TaskFactory {
 private:
@@ -44,7 +44,7 @@ public:
 
     void Register(const std::string &taskName, CreateTaskFn fnCreate);
 
-    ITask *CreateTask(const TaskAnnotation annotation, const SourceUnit *_ast);
+    ITask *CreateTask(const TaskAnnotation annotation, const SourceUnit& _ast);
 };
 
 }

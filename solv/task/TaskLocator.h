@@ -20,8 +20,8 @@ class TaskLocator : public ASTConstVisitor {
 // in the line.
 public:
     TaskLocator(
-            const SourceUnit *_ast, langutil::SourceLocation const &_line_location
-    ) : m_ast(_ast), m_line_location(_line_location) {};
+            const SourceUnit& _ast, langutil::SourceLocation const &_line_location
+    ) : m_ast(&_ast), m_line_location(_line_location) {};
 
     virtual const ASTNode *locate() = 0;
 

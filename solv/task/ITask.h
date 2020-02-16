@@ -15,7 +15,7 @@ namespace verifier
 
 class ITask {
 public:
-    ITask(const SourceUnit *_ast, const ASTNode *_target) : m_ast(_ast), m_target(_target) {};
+    ITask(const SourceUnit &_ast, const ASTNode *_target) : m_ast(&_ast), m_target(_target) {};
     virtual ~ITask() {
         delete m_target;
     };
@@ -23,7 +23,7 @@ public:
 
     virtual void execute() { return; };
 
-    static ITask *Create(const SourceUnit *_ast, const ASTNode *_target);
+    static ITask *Create(const SourceUnit& _ast, const ASTNode *_target);
 
     [[nodiscard]] const SourceUnit *getAst() const {
         return m_ast;

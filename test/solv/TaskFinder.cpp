@@ -14,6 +14,7 @@
 #include <solv/task/ImmutabilityCheck/ImmutabilityCheckTaskLocator.h>
 
 #include <test/Options.h>
+#include <libsolidity/interface/CompilerStack.h>
 
 using namespace std;
 using namespace langutil;
@@ -26,16 +27,6 @@ namespace verifier
 {
 namespace test
 {
-ASTPointer<SourceUnit> parseText(string const &_source) {
-    ErrorList errors;
-    ErrorReporter errorReporter(errors);
-    ASTPointer<SourceUnit> _sourceUnit = Parser(
-            errorReporter,
-            dev::test::Options::get().evmVersion(),
-            false
-    ).parse(std::make_shared<Scanner>(CharStream(_source, "")));
-    return _sourceUnit;
-}
 
 string source = "pragma solidity >=0.4.22 <0.6.0;\n"    // 33 chars
                 "contract Bank {\n"                     // 16 chars
@@ -69,8 +60,14 @@ BOOST_AUTO_TEST_CASE(test_find_targets) {
             BOOST_CHECK_EQUAL(ants[1].m_line_location.end, 118);
         }
 
-        ASTPointer<SourceUnit> _sourceUnit = parseText(source);
-        const SourceUnit * sourceUnit = _sourceUnit.get();
+        std::map<std::string, std::string> sourceCodes;
+        sourceCodes["s"] = source;
+
+        std::unique_ptr<dev::solidity::CompilerStack> compiler;
+        compiler.reset(new CompilerStack());
+        compiler->setSources(sourceCodes);
+        BOOST_CHECK(compiler->parseAndAnalyze());
+        const SourceUnit& sourceUnit = compiler->ast("s");
 
         if (ants.size() == 2) {
             // check the first one
@@ -80,13 +77,33 @@ BOOST_AUTO_TEST_CASE(test_find_targets) {
             // check the second one
             ImmutabilityCheckTaskLocator* secondLocator = new ImmutabilityCheckTaskLocator(sourceUnit, ants[1].m_line_location);
             const VariableDeclaration * secondTarget = secondLocator->locate();
+            cout << "isLocalVariable?: " << secondTarget->isLocalVariable() << endl;
+            cout << "isCallableParameter?: " << secondTarget->isCallableParameter() << endl;
+            cout << "isReturnParameter?: " << secondTarget->isReturnParameter() << endl;
+            cout << "isLocalOrReturn?: " << secondTarget->isLocalOrReturn() << endl;
+            cout << "isExternalCallableParameter?: " << secondTarget->isExternalCallableParameter() << endl;
+            cout << "isInternalCallableParameter?: " << secondTarget->isInternalCallableParameter() << endl;
+            cout << "isLibraryFunctionParameter?: " << secondTarget->isLibraryFunctionParameter() << endl;
+            cout << "isEventParameter?: " << secondTarget->isEventParameter() << endl;
+//            Can only be called after reference resolution
+            cout << "hasReferenceOrMappingType?: " << secondTarget->hasReferenceOrMappingType() << endl;
+            cout << "isStateVariable?: " << secondTarget->isStateVariable() << endl;
+            cout << "isIndexed?: " << secondTarget->isIndexed() << endl;
+            cout << "isConstant?: " << secondTarget->isConstant() << endl;
             BOOST_CHECK_EQUAL(secondTarget->id(), 5);
         }
 }
 
 BOOST_AUTO_TEST_CASE(test_find_tasks) {
-    ASTPointer<SourceUnit> _sourceUnit = parseText(source);
-    const SourceUnit * sourceUnit = _sourceUnit.get();
+        std::map<std::string, std::string> sourceCodes;
+        sourceCodes["s"] = source;
+
+        std::unique_ptr<dev::solidity::CompilerStack> compiler;
+        compiler.reset(new CompilerStack());
+        compiler->setSources(sourceCodes);
+        BOOST_CHECK(compiler->parseAndAnalyze());
+        const SourceUnit& sourceUnit = compiler->ast("s");
+
     vector<ITask*> tasks = TaskFinder::findTasks(source, sourceUnit);
     if (tasks.size() == 2) {
         BOOST_CHECK(dynamic_cast<ImmutabilityCheckTask*>((ImmutabilityCheckTask*) tasks[0]));

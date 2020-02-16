@@ -42,7 +42,7 @@ vector<TaskAnnotation> TaskFinder::findAnnotations(const string& source) {
     return result;
 }
 
-vector<ITask*> TaskFinder::findTasks(const string& source, const SourceUnit *_ast) {
+vector<ITask*> TaskFinder::findTasks(const string& source, const SourceUnit& _ast) {
     vector<TaskAnnotation> ants = findAnnotations(source);
     vector<ITask*> result;
 

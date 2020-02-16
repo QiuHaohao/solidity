@@ -23,7 +23,7 @@ void ImmutabilityCheckTask::execute() {
     return;
 }
 
-ITask *ImmutabilityCheckTask::Create(const SourceUnit *_ast, const SourceLocation _line_location) {
+ITask *ImmutabilityCheckTask::Create(const SourceUnit& _ast, const SourceLocation _line_location) {
     ImmutabilityCheckTaskLocator *_locator = new ImmutabilityCheckTaskLocator(_ast, _line_location);
     const VariableDeclaration *_target = _locator->locate();
     return new ImmutabilityCheckTask(_ast, _target);

@@ -16,7 +16,7 @@ namespace verifier
 class ImmutabilityCheckTaskLocator : TaskLocator {
 public:
     ImmutabilityCheckTaskLocator(
-            const SourceUnit *_ast, langutil::SourceLocation const &_line_location
+            const SourceUnit& _ast, langutil::SourceLocation const &_line_location
     ) : TaskLocator(_ast, _line_location) {};
 
     const VariableDeclaration *locate() override;
