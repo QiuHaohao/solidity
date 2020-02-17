@@ -77,32 +77,20 @@ BOOST_AUTO_TEST_CASE(test_find_targets) {
             // check the second one
             ImmutabilityCheckTaskLocator* secondLocator = new ImmutabilityCheckTaskLocator(sourceUnit, ants[1].m_line_location);
             const VariableDeclaration * secondTarget = secondLocator->locate();
-            cout << "isLocalVariable?: " << secondTarget->isLocalVariable() << endl;
-            cout << "isCallableParameter?: " << secondTarget->isCallableParameter() << endl;
-            cout << "isReturnParameter?: " << secondTarget->isReturnParameter() << endl;
-            cout << "isLocalOrReturn?: " << secondTarget->isLocalOrReturn() << endl;
-            cout << "isExternalCallableParameter?: " << secondTarget->isExternalCallableParameter() << endl;
-            cout << "isInternalCallableParameter?: " << secondTarget->isInternalCallableParameter() << endl;
-            cout << "isLibraryFunctionParameter?: " << secondTarget->isLibraryFunctionParameter() << endl;
-            cout << "isEventParameter?: " << secondTarget->isEventParameter() << endl;
-//            Can only be called after reference resolution
-            cout << "hasReferenceOrMappingType?: " << secondTarget->hasReferenceOrMappingType() << endl;
-            cout << "isStateVariable?: " << secondTarget->isStateVariable() << endl;
-            cout << "isIndexed?: " << secondTarget->isIndexed() << endl;
-            cout << "isConstant?: " << secondTarget->isConstant() << endl;
             BOOST_CHECK_EQUAL(secondTarget->id(), 5);
         }
 }
 
 BOOST_AUTO_TEST_CASE(test_find_tasks) {
-        std::map<std::string, std::string> sourceCodes;
-        sourceCodes["s"] = source;
+    std::map<std::string, std::string> sourceCodes;
+    sourceCodes["s"] = source;
 
-        std::unique_ptr<dev::solidity::CompilerStack> compiler;
-        compiler.reset(new CompilerStack());
-        compiler->setSources(sourceCodes);
-        BOOST_CHECK(compiler->parseAndAnalyze());
-        const SourceUnit& sourceUnit = compiler->ast("s");
+    std::unique_ptr<dev::solidity::CompilerStack> compiler;
+    compiler.reset(new CompilerStack());
+    compiler->setSources(sourceCodes);
+    BOOST_CHECK(compiler->parseAndAnalyze());
+    const SourceUnit& sourceUnit = compiler->ast("s");
+//    auto a = dynamic_cast<ContractDefinition*>(sourceUnit.nodes()[1].get())->definedFunctions();
 
     vector<ITask*> tasks = TaskFinder::findTasks(source, sourceUnit);
     if (tasks.size() == 2) {
