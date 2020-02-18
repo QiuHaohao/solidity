@@ -40,3 +40,4 @@ const std::map<size_t, std::vector<size_t>> &ImmutabilityASTTraverser::getCalled
 const std::set<size_t> &ImmutabilityASTTraverser::getAssigners() const {
     return assigners;
 }
+}

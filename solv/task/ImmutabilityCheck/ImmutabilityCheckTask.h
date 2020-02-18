@@ -29,7 +29,7 @@ public:
 
     void execute() override;
 
-    static ITask *Create(const SourceUnit& _ast, const langutil::SourceLocation& _line_location);
+    static ITask *Create(const SourceUnit& _ast, const langutil::SourceLocation _line_location);
 
 private:
     std::map<size_t, FunctionDefinition const *> idMap;
