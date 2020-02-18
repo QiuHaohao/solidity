@@ -4,9 +4,9 @@
 #include <queue>
 #include <string>
 
-#include "ImmutabilityCheckTask.h"
-#include "ImmutabilityCheckTaskLocator.h"
-#include "ImmutabilityASTTraverser.h"
+#include "FixedAfterInitCheckTask.h"
+#include "FixedAfterInitCheckTaskLocator.h"
+#include "FixedAfterInitASTTraverser.h"
 
 using namespace std;
 using namespace langutil;
@@ -14,9 +14,9 @@ using namespace langutil;
 namespace dev::solidity::verifier
 {
 
-const string ImmutabilityCheckTask::taskName = "immutable";
+const string FixedAfterInitCheckTask::taskName = "fixed-after-init";
 
-void ImmutabilityCheckTask::execute() {
+void FixedAfterInitCheckTask::execute() {
     // init idMap
     vector<FunctionDefinition const*> functions = dynamic_cast<ContractDefinition*>(getAst()->nodes()[1].get())->definedFunctions();
     for (auto & function : functions) {
@@ -24,7 +24,7 @@ void ImmutabilityCheckTask::execute() {
     }
     // run visitor on ast
     const SourceUnit* ast = getAst();
-    auto* astTraverser = new ImmutabilityASTTraverser(getAst(), getTarget());
+    auto* astTraverser = new FixedAfterInitASTTraverser(getAst(), getTarget());
     ast->accept(*astTraverser);
     const map<size_t, vector<size_t>> calledBy = astTraverser->getCalledBy();
     const set<size_t> assigners = astTraverser->getAssigners();
@@ -50,7 +50,7 @@ void ImmutabilityCheckTask::execute() {
             auto f = functions[id];
             if (f->isPublic()) {
                 cerr << "Function "<<functions[assigner]->name()
-                    <<", which contains an assignment to the immutable variable "
+                    <<", which contains an assignment to the fixed-after-init variable "
                     << dynamic_cast<const VariableDeclaration*>(getTarget())->name()
                     <<", can be called Through a public function "<<f->name()<<".";
             }
@@ -58,9 +58,9 @@ void ImmutabilityCheckTask::execute() {
     }
 }
 
-ITask* ImmutabilityCheckTask::Create(const SourceUnit& _ast, const SourceLocation _line_location) {
-    auto *_locator = new ImmutabilityCheckTaskLocator(_ast, _line_location);
+ITask* FixedAfterInitCheckTask::Create(const SourceUnit& _ast, const SourceLocation _line_location) {
+    auto *_locator = new FixedAfterInitCheckTaskLocator(_ast, _line_location);
     const VariableDeclaration *_target = _locator->locate();
-    return new ImmutabilityCheckTask(_ast, _target);
+    return new FixedAfterInitCheckTask(_ast, _target);
 }
 }

@@ -1,8 +1,8 @@
 //
 // Created by Qiu Haoze on 12/12/19.
 //
-#ifndef SOLIDITY_IMMUTABILITYCHECKTASKLOCATOR_H
-#define SOLIDITY_IMMUTABILITYCHECKTASKLOCATOR_H
+#ifndef SOLIDITY_FIXEDAFTERINITCHECKTASKLOCATOR_H
+#define SOLIDITY_FIXEDAFTERINITCHECKTASKLOCATOR_H
 
 #include "solv/task/TaskLocator.h"
 
@@ -13,9 +13,9 @@ namespace solidity
 namespace verifier
 {
 
-class ImmutabilityCheckTaskLocator : TaskLocator {
+class FixedAfterInitCheckTaskLocator : TaskLocator {
 public:
-    ImmutabilityCheckTaskLocator(
+    FixedAfterInitCheckTaskLocator(
             const SourceUnit& _ast, langutil::SourceLocation const &_line_location
     ) : TaskLocator(_ast, _line_location) {};
 
@@ -31,4 +31,4 @@ private:
 }
 }
 
-#endif //SOLIDITY_IMMUTABILITYCHECKTASKLOCATOR_H
+#endif //SOLIDITY_FIXEDAFTERINITCHECKTASKLOCATOR_H

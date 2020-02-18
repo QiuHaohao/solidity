@@ -10,8 +10,8 @@
 #include <liblangutil/SourceLocation.h>
 
 #include <solv/task/TaskFinder.h>
-#include <solv/task/ImmutabilityCheck/ImmutabilityCheckTask.h>
-#include <solv/task/ImmutabilityCheck/ImmutabilityCheckTaskLocator.h>
+#include <solv/task/FixedAfterInitCheck/FixedAfterInitCheckTask.h>
+#include <solv/task/FixedAfterInitCheck/FixedAfterInitCheckTaskLocator.h>
 
 #include <test/Options.h>
 #include <libsolidity/interface/CompilerStack.h>
@@ -30,8 +30,8 @@ namespace test
 
 string source = "pragma solidity >=0.4.22 <0.6.0;\n"    // 33 chars
                 "contract Bank {\n"                     // 16 chars
-                "    uint a; //@verifier immutable\n"   // 34 chars (first one starts at 33 + 16 = 49, ends at 49 + 34 = 83)
-                "    uint b; //@verifier immutable\n"   // 38 chars (first one starts at 84, ends at 84 + 38 = 122)
+                "    uint a; //@verifier fixed-after-init\n"   // 34 chars (first one starts at 33 + 16 = 49, ends at 49 + 34 = 83)
+                "    uint b; //@verifier fixed-after-init\n"   // 38 chars (first one starts at 84, ends at 84 + 38 = 122)
                 "\n"
                 "    function add(uint x, uint y) public returns (uint r, uint s){\n"
                 "        return (r,s);\n"
@@ -52,12 +52,12 @@ BOOST_AUTO_TEST_CASE(test_find_targets) {
         BOOST_CHECK_EQUAL(ants.size(), 2);
 
         if (ants.size() == 2) {
-            BOOST_CHECK_EQUAL(ants[0].m_type, "immutable");
+            BOOST_CHECK_EQUAL(ants[0].m_type, "fixed-after-init");
             BOOST_CHECK_EQUAL(ants[0].m_line_location.start, 49);
-            BOOST_CHECK_EQUAL(ants[0].m_line_location.end, 83);
-            BOOST_CHECK_EQUAL(ants[1].m_type, "immutable");
-            BOOST_CHECK_EQUAL(ants[1].m_line_location.start, 84);
-            BOOST_CHECK_EQUAL(ants[1].m_line_location.end, 118);
+            BOOST_CHECK_EQUAL(ants[0].m_line_location.end, 90);
+            BOOST_CHECK_EQUAL(ants[1].m_type, "fixed-after-init");
+            BOOST_CHECK_EQUAL(ants[1].m_line_location.start, 91);
+            BOOST_CHECK_EQUAL(ants[1].m_line_location.end, 132);
         }
 
         std::map<std::string, std::string> sourceCodes;
@@ -71,11 +71,11 @@ BOOST_AUTO_TEST_CASE(test_find_targets) {
 
         if (ants.size() == 2) {
             // check the first one
-            ImmutabilityCheckTaskLocator* firstLocator = new ImmutabilityCheckTaskLocator(sourceUnit, ants[0].m_line_location);
+            FixedAfterInitCheckTaskLocator* firstLocator = new FixedAfterInitCheckTaskLocator(sourceUnit, ants[0].m_line_location);
             const VariableDeclaration * firstTarget = firstLocator->locate();
             BOOST_CHECK_EQUAL(firstTarget->id(), 3);
             // check the second one
-            ImmutabilityCheckTaskLocator* secondLocator = new ImmutabilityCheckTaskLocator(sourceUnit, ants[1].m_line_location);
+            FixedAfterInitCheckTaskLocator* secondLocator = new FixedAfterInitCheckTaskLocator(sourceUnit, ants[1].m_line_location);
             const VariableDeclaration * secondTarget = secondLocator->locate();
             BOOST_CHECK_EQUAL(secondTarget->id(), 5);
         }
@@ -93,8 +93,8 @@ BOOST_AUTO_TEST_CASE(test_find_tasks) {
 
     vector<ITask*> tasks = TaskFinder::findTasks(source, sourceUnit);
     if (tasks.size() == 2) {
-        BOOST_CHECK(dynamic_cast<ImmutabilityCheckTask*>((ImmutabilityCheckTask*) tasks[0]));
-        BOOST_CHECK(dynamic_cast<ImmutabilityCheckTask*>((ImmutabilityCheckTask*) tasks[1]));
+        BOOST_CHECK(dynamic_cast<FixedAfterInitCheckTask*>((FixedAfterInitCheckTask*) tasks[0]));
+        BOOST_CHECK(dynamic_cast<FixedAfterInitCheckTask*>((FixedAfterInitCheckTask*) tasks[1]));
     }
 }
 

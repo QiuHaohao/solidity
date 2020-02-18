@@ -2,15 +2,15 @@
 // Created by Qiu Haoze on 19/2/20.
 //
 
-#include "ImmutabilityASTTraverser.h"
+#include "FixedAfterInitASTTraverser.h"
 namespace dev::solidity::verifier {
 
-bool ImmutabilityASTTraverser::visit(FunctionDefinition const &_node) {
+bool FixedAfterInitASTTraverser::visit(FunctionDefinition const &_node) {
     this->currentFunc = &_node;
     return true;
 }
 
-bool ImmutabilityASTTraverser::visit(Assignment const &_node) {
+bool FixedAfterInitASTTraverser::visit(Assignment const &_node) {
     Expression const &leftHandSideExpr = _node.leftHandSide();
     // if left-hand side is an identifier
     if (auto const *identifier = &dynamic_cast<Identifier const &>(leftHandSideExpr)) {
@@ -23,7 +23,7 @@ bool ImmutabilityASTTraverser::visit(Assignment const &_node) {
     return true;
 }
 
-bool ImmutabilityASTTraverser::visit(FunctionCall const &_node) {
+bool FixedAfterInitASTTraverser::visit(FunctionCall const &_node) {
     Expression const &idFuncCalled = _node.expression();
     // if the expression is an identifier
     if (auto const *identifier = &dynamic_cast<Identifier const &>(idFuncCalled)) {
@@ -33,11 +33,11 @@ bool ImmutabilityASTTraverser::visit(FunctionCall const &_node) {
     return true;
 }
 
-const std::map<size_t, std::vector<size_t>> &ImmutabilityASTTraverser::getCalledBy() const {
+const std::map<size_t, std::vector<size_t>> &FixedAfterInitASTTraverser::getCalledBy() const {
     return calledBy;
 }
 
-const std::set<size_t> &ImmutabilityASTTraverser::getAssigners() const {
+const std::set<size_t> &FixedAfterInitASTTraverser::getAssigners() const {
     return assigners;
 }
 }

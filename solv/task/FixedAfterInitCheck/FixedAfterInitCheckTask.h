@@ -3,8 +3,8 @@
 //
 
 
-#ifndef SOLIDITY_IMMUTABILITYCHECKTASK_H
-#define SOLIDITY_IMMUTABILITYCHECKTASK_H
+#ifndef SOLIDITY_FIXEDAFTERINITCHECKTASK_H
+#define SOLIDITY_FIXEDAFTERINITCHECKTASK_H
 
 #include <set>
 
@@ -21,11 +21,11 @@ namespace solidity
 namespace verifier
 {
 
-class ImmutabilityCheckTask : ITask {
+class FixedAfterInitCheckTask : ITask {
 public:
     static const std::string taskName;
 
-    ImmutabilityCheckTask(const SourceUnit& _ast, const ASTNode *_target) : ITask(_ast, _target) {}
+    FixedAfterInitCheckTask(const SourceUnit& _ast, const ASTNode *_target) : ITask(_ast, _target) {}
 
     void execute() override;
 
@@ -38,4 +38,4 @@ private:
 }
 }
 }
-#endif //SOLIDITY_IMMUTABILITYCHECKTASK_H
+#endif //SOLIDITY_FIXEDAFTERINITCHECKTASK_H

@@ -3,7 +3,7 @@
 //
 
 #include "TaskFactory.h"
-#include "solv/task/ImmutabilityCheck/ImmutabilityCheckTask.h"
+#include "solv/task/FixedAfterInitCheck/FixedAfterInitCheckTask.h"
 
 using namespace std;
 using namespace langutil;
@@ -15,7 +15,7 @@ namespace solidity
 namespace verifier {
 
 TaskFactory::TaskFactory() {
-    Register(ImmutabilityCheckTask::taskName, &ImmutabilityCheckTask::Create);
+    Register(FixedAfterInitCheckTask::taskName, &FixedAfterInitCheckTask::Create);
 }
 
 void TaskFactory::Register(const string &taskName, CreateTaskFn fnCreate) {

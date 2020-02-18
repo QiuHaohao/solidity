@@ -2,7 +2,7 @@
 // Created by Qiu Haoze on 12/12/19.
 //
 
-#include "ImmutabilityCheckTaskLocator.h"
+#include "FixedAfterInitCheckTaskLocator.h"
 
 using namespace langutil;
 
@@ -13,7 +13,7 @@ namespace solidity
 namespace verifier
 {
 
-const VariableDeclaration *ImmutabilityCheckTaskLocator::locate() {
+const VariableDeclaration *FixedAfterInitCheckTaskLocator::locate() {
     if (!m_located) {
         const SourceUnit *sourceUnit = TaskLocator::ast();
         sourceUnit->accept(*this);
@@ -22,7 +22,7 @@ const VariableDeclaration *ImmutabilityCheckTaskLocator::locate() {
     return m_target;
 }
 
-bool ImmutabilityCheckTaskLocator::visit(VariableDeclaration const &_node) {
+bool FixedAfterInitCheckTaskLocator::visit(VariableDeclaration const &_node) {
     SourceLocation nodeLocation = _node.location();
     SourceLocation annotationLocation = TaskLocator::lineLocation();
     if (annotationLocation.start <= nodeLocation.start

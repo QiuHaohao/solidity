@@ -2,16 +2,16 @@
 // Created by Qiu Haoze on 19/2/20.
 //
 
-#ifndef SOLIDITY_IMMUTABILITYASTTRAVERSER_H
-#define SOLIDITY_IMMUTABILITYASTTRAVERSER_H
+#ifndef SOLIDITY_FIXEDAFTERINITASTTRAVERSER_H
+#define SOLIDITY_FIXEDAFTERINITASTTRAVERSER_H
 
 #include <libsolidity/ast/AST.h>
 #include <libsolidity/ast/ASTVisitor.h>
 
 namespace dev::solidity::verifier {
-class ImmutabilityASTTraverser : public ASTConstVisitor {
+class FixedAfterInitASTTraverser : public ASTConstVisitor {
 public:
-    ImmutabilityASTTraverser(const SourceUnit* _ast, const ASTNode *_target) : m_ast(_ast),m_target(_target) {}
+    FixedAfterInitASTTraverser(const SourceUnit* _ast, const ASTNode *_target) : m_ast(_ast), m_target(_target) {}
 
     [[nodiscard]] const SourceUnit *getAst() const {
         return m_ast;
@@ -45,4 +45,4 @@ private:
 };
 
 }
-#endif //SOLIDITY_IMMUTABILITYASTTRAVERSER_H
+#endif //SOLIDITY_FIXEDAFTERINITASTTRAVERSER_H
