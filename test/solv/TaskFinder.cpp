@@ -90,7 +90,6 @@ BOOST_AUTO_TEST_CASE(test_find_tasks) {
     compiler->setSources(sourceCodes);
     BOOST_CHECK(compiler->parseAndAnalyze());
     const SourceUnit& sourceUnit = compiler->ast("s");
-//    auto a = dynamic_cast<ContractDefinition*>(sourceUnit.nodes()[1].get())->definedFunctions();
 
     vector<ITask*> tasks = TaskFinder::findTasks(source, sourceUnit);
     if (tasks.size() == 2) {

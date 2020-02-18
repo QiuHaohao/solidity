@@ -6,9 +6,12 @@
 #ifndef SOLIDITY_IMMUTABILITYCHECKTASK_H
 #define SOLIDITY_IMMUTABILITYCHECKTASK_H
 
-#include <liblangutil/SourceLocation.h>
+#include <set>
 
-#include "solv/task/ITask.h"
+#include <liblangutil/SourceLocation.h>
+#include <libsolidity/ast/AST.h>
+#include <solv/task/ITask.h>
+
 #include "solv/task/TaskFactory.h"
 
 namespace dev
@@ -24,9 +27,12 @@ public:
 
     ImmutabilityCheckTask(const SourceUnit& _ast, const ASTNode *_target) : ITask(_ast, _target) {}
 
-    virtual void execute();
+    void execute() override;
 
-    static ITask *Create(const SourceUnit& _ast, const langutil::SourceLocation _line_location);
+    static ITask *Create(const SourceUnit& _ast, const langutil::SourceLocation& _line_location);
+
+private:
+    std::map<size_t, FunctionDefinition const *> idMap;
 };
 
 }

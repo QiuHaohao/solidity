@@ -16,7 +16,9 @@ add_library(
         task/ImmutabilityCheck/ImmutabilityCheckTask.cpp
         task/ImmutabilityCheck/ImmutabilityCheckTask.h
         task/ImmutabilityCheck/ImmutabilityCheckTaskLocator.h
-        task/ImmutabilityCheck/ImmutabilityCheckTaskLocator.cpp)
+        task/ImmutabilityCheck/ImmutabilityCheckTaskLocator.cpp
+        task/ImmutabilityCheck/ImmutabilityASTTraverser.cpp
+        task/ImmutabilityCheck/ImmutabilityASTTraverser.h)
 add_executable(solv ${sources})
 target_link_libraries(libsolv PRIVATE solidity Boost::boost Boost::program_options)
 target_link_libraries(solv PRIVATE solidity libsolv Boost::boost Boost::program_options)
