@@ -16,7 +16,7 @@ namespace dev::solidity::verifier
 
 const string FixedAfterInitCheckTask::taskName = "fixed-after-init";
 
-void FixedAfterInitCheckTask::execute() {
+vector<IReportItem*> FixedAfterInitCheckTask::execute() {
     // init idMap
     vector<FunctionDefinition const*> functions = dynamic_cast<ContractDefinition*>(getAst()->nodes()[1].get())->definedFunctions();
     for (auto & function : functions) {
@@ -28,6 +28,8 @@ void FixedAfterInitCheckTask::execute() {
     ast->accept(*astTraverser);
     const map<size_t, vector<size_t>> calledBy = astTraverser->getCalledBy();
     const set<size_t> assigners = astTraverser->getAssigners();
+
+    vector<IReportItem*> report;
     for (auto assigner : assigners) {
         queue<size_t> q;
         set<size_t> reached;
@@ -49,13 +51,17 @@ void FixedAfterInitCheckTask::execute() {
         for (auto id : reached) {
             auto f = functions[id];
             if (f->isPublic()) {
-                cerr << "Function "<<functions[assigner]->name()
-                    <<", which contains an assignment to the fixed-after-init variable "
-                    << dynamic_cast<const VariableDeclaration*>(getTarget())->name()
-                    <<", can be called Through a public function "<<f->name()<<".";
+                report.push_back(
+                    new FixedAfterInitReportItem(
+                        f->name(),
+                        functions[assigner]->name(),
+                        dynamic_cast<const VariableDeclaration*>(getTarget())->name()
+                    )
+                );
             }
         }
     }
+    return report;
 }
 
 ITask* FixedAfterInitCheckTask::Create(const SourceUnit& _ast, const SourceLocation _line_location) {

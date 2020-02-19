@@ -6,6 +6,8 @@
 
 #include <libsolidity/ast/AST.h>
 
+#include "solv/task/IReportItem.h"
+
 namespace dev
 {
 namespace solidity
@@ -21,7 +23,7 @@ public:
     };
     static const std::string taskName;
 
-    virtual void execute() { return; };
+    virtual std::vector<IReportItem*> execute() {return std::vector<IReportItem*>();};
 
     static ITask *Create(const SourceUnit& _ast, const ASTNode *_target);
 

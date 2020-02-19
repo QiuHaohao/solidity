@@ -10,9 +10,10 @@
 
 #include <liblangutil/SourceLocation.h>
 #include <libsolidity/ast/AST.h>
-#include <solv/task/ITask.h>
 
+#include "solv/task/ITask.h"
 #include "solv/task/TaskFactory.h"
+#include "./FixedAfterInitReportItem.h"
 
 namespace dev
 {
@@ -27,7 +28,7 @@ public:
 
     FixedAfterInitCheckTask(const SourceUnit& _ast, const ASTNode *_target) : ITask(_ast, _target) {}
 
-    void execute() override;
+    std::vector<IReportItem*> execute() override;
 
     static ITask *Create(const SourceUnit& _ast, const langutil::SourceLocation _line_location);
 
