@@ -43,7 +43,7 @@ vector<IReportItem*> FixedAfterInitCheckTask::execute() {
             size_t cur = q.front();
             auto range = calledBy.equal_range(cur);
             for (auto i = range.first; i != range.second; ++i) {
-                if (reached.find(i->second) != reached.end()) {
+                if (reached.find(i->second) == reached.end()) {
                     q.push(i->second);
                     reached.insert(i->second);
                 }
@@ -53,7 +53,7 @@ vector<IReportItem*> FixedAfterInitCheckTask::execute() {
 
         for (auto id : reached) {
             auto f = idMap[id];
-            if (f->isPublic()) {
+            if (f->isPublic()&&!f->isConstructor()) {
                 report.push_back(
                     new FixedAfterInitReportItem(
                         f->name(),

@@ -16,7 +16,7 @@ void FixedAfterInitReportItem::report() {
     cerr << "Function "<< getAssigner()
          << ", which contains an assignment to the fixed-after-init variable "
          << getVariable()
-         << ", can be called Through a public function "
+         << ", can be called through a public function "
          << getCaller()<<".";
 }
 }

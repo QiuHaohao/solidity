@@ -11,7 +11,9 @@
 namespace dev::solidity::verifier {
 class FixedAfterInitASTTraverser : public ASTConstVisitor {
 public:
-    FixedAfterInitASTTraverser(const SourceUnit* _ast, const ASTNode *_target) : m_ast(_ast), m_target(_target) {}
+    FixedAfterInitASTTraverser(const SourceUnit* _ast, const ASTNode *_target) : m_ast(_ast), m_target(_target) {
+        calledBy = {};
+    }
 
     [[nodiscard]] const SourceUnit *getAst() const {
         return m_ast;
