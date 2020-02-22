@@ -18,17 +18,20 @@ const string FixedAfterInitCheckTask::taskName = "fixed-after-init";
 
 vector<IReportItem*> FixedAfterInitCheckTask::execute() {
     // init idMap
-    vector<FunctionDefinition const*> functions = dynamic_cast<ContractDefinition*>(getAst()->nodes()[1].get())->definedFunctions();
+    ASTPointer<ASTNode> contractNodeSmartPtr = getAst()->nodes()[1];
+    ASTNode* contractNodePtr = contractNodeSmartPtr.get();
+    auto contractDefs = dynamic_cast<ContractDefinition*>(contractNodePtr);
+    vector<FunctionDefinition const*> functions = contractDefs->definedFunctions();
+
     for (auto & function : functions) {
-        idMap.insert(pair<size_t, FunctionDefinition const*>(function->id(), function));
+        idMap[function->id()] = function;
     }
     // run visitor on ast
     const SourceUnit* ast = getAst();
     auto* astTraverser = new FixedAfterInitASTTraverser(getAst(), getTarget());
     ast->accept(*astTraverser);
-    const map<size_t, vector<size_t>> calledBy = astTraverser->getCalledBy();
+    const multimap<size_t, size_t> calledBy = astTraverser->getCalledBy();
     const set<size_t> assigners = astTraverser->getAssigners();
-
     vector<IReportItem*> report;
     for (auto assigner : assigners) {
         queue<size_t> q;
@@ -38,23 +41,23 @@ vector<IReportItem*> FixedAfterInitCheckTask::execute() {
         reached.insert(assigner);
         while (!q.empty()) {
             size_t cur = q.front();
-            reached.insert(cur);
-            for (auto callee : calledBy.at(cur)) {
-                if (reached.find(callee) != reached.end()) {
-                    q.push(callee);
-                    reached.insert(callee);
+            auto range = calledBy.equal_range(cur);
+            for (auto i = range.first; i != range.second; ++i) {
+                if (reached.find(i->second) != reached.end()) {
+                    q.push(i->second);
+                    reached.insert(i->second);
                 }
             }
             q.pop();
         }
 
         for (auto id : reached) {
-            auto f = functions[id];
+            auto f = idMap[id];
             if (f->isPublic()) {
                 report.push_back(
                     new FixedAfterInitReportItem(
                         f->name(),
-                        functions[assigner]->name(),
+                        idMap[assigner]->name(),
                         dynamic_cast<const VariableDeclaration*>(getTarget())->name()
                     )
                 );

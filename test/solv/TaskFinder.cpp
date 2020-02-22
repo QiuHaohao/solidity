@@ -3,6 +3,7 @@
 //
 #include <string>
 
+#include <libsolidity/interface/CompilerStack.h>
 #include <libsolidity/parsing/Parser.h>
 #include <liblangutil/ErrorReporter.h>
 #include <liblangutil/Scanner.h>
@@ -14,7 +15,6 @@
 #include <solv/task/FixedAfterInitCheck/FixedAfterInitCheckTaskLocator.h>
 
 #include <test/Options.h>
-#include <libsolidity/interface/CompilerStack.h>
 
 using namespace std;
 using namespace langutil;
@@ -46,39 +46,39 @@ string source = "pragma solidity >=0.4.22 <0.6.0;\n"    // 33 chars
 BOOST_AUTO_TEST_SUITE(TestTaskFinder)
 
 BOOST_AUTO_TEST_CASE(test_find_targets) {
-        vector<TaskAnnotation> ants = TaskFinder::findAnnotations(source);
+    vector<TaskAnnotation> ants = TaskFinder::findAnnotations(source);
 
-        // one from 49 to 83, another one from 84 to 122
-        BOOST_CHECK_EQUAL(ants.size(), 2);
+    // one from 49 to 83, another one from 84 to 122
+    BOOST_CHECK_EQUAL(ants.size(), 2);
 
-        if (ants.size() == 2) {
-            BOOST_CHECK_EQUAL(ants[0].m_type, "fixed-after-init");
-            BOOST_CHECK_EQUAL(ants[0].m_line_location.start, 49);
-            BOOST_CHECK_EQUAL(ants[0].m_line_location.end, 90);
-            BOOST_CHECK_EQUAL(ants[1].m_type, "fixed-after-init");
-            BOOST_CHECK_EQUAL(ants[1].m_line_location.start, 91);
-            BOOST_CHECK_EQUAL(ants[1].m_line_location.end, 132);
-        }
+    if (ants.size() == 2) {
+        BOOST_CHECK_EQUAL(ants[0].m_type, "fixed-after-init");
+        BOOST_CHECK_EQUAL(ants[0].m_line_location.start, 49);
+        BOOST_CHECK_EQUAL(ants[0].m_line_location.end, 90);
+        BOOST_CHECK_EQUAL(ants[1].m_type, "fixed-after-init");
+        BOOST_CHECK_EQUAL(ants[1].m_line_location.start, 91);
+        BOOST_CHECK_EQUAL(ants[1].m_line_location.end, 132);
+    }
 
-        std::map<std::string, std::string> sourceCodes;
-        sourceCodes["s"] = source;
+    std::map<std::string, std::string> sourceCodes;
+    sourceCodes["s"] = source;
 
-        std::unique_ptr<dev::solidity::CompilerStack> compiler;
-        compiler.reset(new CompilerStack());
-        compiler->setSources(sourceCodes);
-        BOOST_CHECK(compiler->parseAndAnalyze());
-        const SourceUnit& sourceUnit = compiler->ast("s");
+    std::unique_ptr<dev::solidity::CompilerStack> compiler;
+    compiler.reset(new CompilerStack());
+    compiler->setSources(sourceCodes);
+    BOOST_CHECK(compiler->parseAndAnalyze());
+    const SourceUnit& sourceUnit = compiler->ast("s");
 
-        if (ants.size() == 2) {
-            // check the first one
-            FixedAfterInitCheckTaskLocator* firstLocator = new FixedAfterInitCheckTaskLocator(sourceUnit, ants[0].m_line_location);
-            const VariableDeclaration * firstTarget = firstLocator->locate();
-            BOOST_CHECK_EQUAL(firstTarget->id(), 3);
-            // check the second one
-            FixedAfterInitCheckTaskLocator* secondLocator = new FixedAfterInitCheckTaskLocator(sourceUnit, ants[1].m_line_location);
-            const VariableDeclaration * secondTarget = secondLocator->locate();
-            BOOST_CHECK_EQUAL(secondTarget->id(), 5);
-        }
+    if (ants.size() == 2) {
+        // check the first one
+        FixedAfterInitCheckTaskLocator* firstLocator = new FixedAfterInitCheckTaskLocator(sourceUnit, ants[0].m_line_location);
+        const VariableDeclaration * firstTarget = firstLocator->locate();
+        BOOST_CHECK_EQUAL(firstTarget->id(), 3);
+        // check the second one
+        FixedAfterInitCheckTaskLocator* secondLocator = new FixedAfterInitCheckTaskLocator(sourceUnit, ants[1].m_line_location);
+        const VariableDeclaration * secondTarget = secondLocator->locate();
+        BOOST_CHECK_EQUAL(secondTarget->id(), 5);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(test_find_tasks) {

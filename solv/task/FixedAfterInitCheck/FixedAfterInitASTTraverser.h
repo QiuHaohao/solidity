@@ -21,7 +21,7 @@ public:
         return m_target;
     }
 
-    [[nodiscard]] const std::map<size_t, std::vector<size_t>> &getCalledBy() const;
+    [[nodiscard]] const std::multimap<size_t, size_t> &getCalledBy() const;
 
     [[nodiscard]] const std::set<size_t> &getAssigners() const;
 
@@ -36,11 +36,7 @@ private:
     const ASTNode *m_target;
 
     FunctionDefinition const *currentFunc{};
-    std::map<size_t, std::vector<size_t>> calledBy;
-public:
-
-
-private:
+    std::multimap<size_t, size_t> calledBy;
     std::set<size_t> assigners;
 };
 
