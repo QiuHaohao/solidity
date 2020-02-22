@@ -41,6 +41,35 @@ BOOST_AUTO_TEST_SUITE(TestFixedAfterInitCheckTask)
         vector<IReportItem*> reportItems = tasks[0]->execute();
         BOOST_CHECK_EQUAL(0, reportItems.size());
     }
+    BOOST_AUTO_TEST_CASE(test_modified_in_private_private_constructor) {
+        string modifiedInPublicFuncContract = "pragma solidity >=0.4.22 <0.6.0;\n"
+                                              "contract ModifiedInPublicFuncContract {\n"
+                                              "    address owner; //@verifier fixed-after-init\n"
+                                              "    constructor () public {\n"
+                                              "        somePrivateFunc();\n"
+                                              "    }\n"
+                                              "    function somePrivateFunc () private {\n"
+                                              "        changeOwner();\n"
+                                              "    }\n"
+                                              "    function changeOwner () private {\n"
+                                              "        owner = msg.sender;\n"
+                                              "    }\n"
+                                              "}";
+        std::map<std::string, std::string> sourceCodes;
+        sourceCodes["s"] = modifiedInPublicFuncContract;
+
+        std::unique_ptr<dev::solidity::CompilerStack> compiler;
+        compiler.reset(new CompilerStack());
+        compiler->setSources(sourceCodes);
+        BOOST_CHECK(compiler->parseAndAnalyze());
+        const SourceUnit& sourceUnit = compiler->ast("s");
+
+        vector<ITask*> tasks = TaskFinder::findTasks(modifiedInPublicFuncContract, sourceUnit);
+        BOOST_CHECK_EQUAL(1, tasks.size());
+
+        vector<IReportItem*> reportItems = tasks[0]->execute();
+        BOOST_CHECK_EQUAL(0, reportItems.size());
+    }
     BOOST_AUTO_TEST_CASE(test_modified_in_public_func) {
         string modifiedInPublicFuncContract = "pragma solidity >=0.4.22 <0.6.0;\n"
                                               "contract ModifiedInPublicFuncContract {\n"

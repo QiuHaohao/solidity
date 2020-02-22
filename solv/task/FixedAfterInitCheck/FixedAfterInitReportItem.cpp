@@ -13,11 +13,11 @@ namespace verifier
 {
 
 void FixedAfterInitReportItem::report() {
-    cerr << "Function "<< getAssigner()
-         << ", which contains an assignment to the fixed-after-init variable "
+    cerr << "Function \"" << getAssigner()
+         << "\", which contains an assignment to the fixed-after-init variable \""
          << getVariable()
-         << ", can be called through a public function "
-         << getCaller()<<".";
+         << "\", can be invoked through a public function \""
+         << getCaller() << "\"." << endl;
 }
 }
 }
