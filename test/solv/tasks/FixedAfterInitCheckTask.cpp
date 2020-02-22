@@ -20,7 +20,7 @@ namespace test {
 BOOST_AUTO_TEST_SUITE(TestFixedAfterInitCheckTask)
     BOOST_AUTO_TEST_CASE(test_modified_in_constructor) {
         string modifiedInPublicFuncContract = "pragma solidity >=0.4.22 <0.6.0;\n"
-                                              "contract ModifiedInPublicFuncContract {\n"
+                                              "contract ModifiedInConstructorFuncContract {\n"
                                               "    address owner; //@verifier fixed-after-init\n"
                                               "    constructor () public {\n"
                                               "        owner = msg.sender;\n"
@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_SUITE(TestFixedAfterInitCheckTask)
     }
     BOOST_AUTO_TEST_CASE(test_modified_in_private_private_constructor) {
         string modifiedInPublicFuncContract = "pragma solidity >=0.4.22 <0.6.0;\n"
-                                              "contract ModifiedInPublicFuncContract {\n"
+                                              "contract ModifiedInPrivatePrivateConstructorContract {\n"
                                               "    address owner; //@verifier fixed-after-init\n"
                                               "    constructor () public {\n"
                                               "        somePrivateFunc();\n"
@@ -105,7 +105,7 @@ BOOST_AUTO_TEST_SUITE(TestFixedAfterInitCheckTask)
     }
     BOOST_AUTO_TEST_CASE(test_modified_in_private_private_public) {
         string modifiedInPublicFuncContract = "pragma solidity >=0.4.22 <0.6.0;\n"
-                                              "contract ModifiedInPublicFuncContract {\n"
+                                              "contract ModifiedInPrivatePrivatePublicFuncContract {\n"
                                               "    address owner; //@verifier fixed-after-init\n"
                                               "    function somePublicFunc () public {\n"
                                               "        somePrivateFunc();\n"

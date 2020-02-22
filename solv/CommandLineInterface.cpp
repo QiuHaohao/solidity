@@ -18,6 +18,10 @@
 
 #include <boost/filesystem.hpp>
 
+#include <solv/task/ITask.h>
+#include <solv/task/TaskFinder.h>
+#include <solv/task/IReportItem.h>
+
 using namespace std;
 using namespace langutil;
 namespace po = boost::program_options;
@@ -409,6 +413,20 @@ void CommandLineInterface::outputResults()
     // do we need AST output?
     if (m_args.count(g_argAst))
         handleAst();
+    else {
+        for (auto const& sourceCode: m_sourceCodes)
+        {
+            sout() << endl << "======= " << sourceCode.first << " =======" << endl;
+            const SourceUnit& sourceUnit = m_compiler->ast(sourceCode.first);
+            vector<ITask*> tasks = TaskFinder::findTasks(sourceCode.second, sourceUnit);
+            for (auto task : tasks) {
+                vector<IReportItem*> reportItems = task->execute();
+                for (auto reportItem : reportItems) {
+                    reportItem->report();
+                }
+            }
+        }
+    }
 }
 
 bool CommandLineInterface::actOnInput()
@@ -416,6 +434,7 @@ bool CommandLineInterface::actOnInput()
     outputResults();
     return true;
 }
+
 }
 }
 }
