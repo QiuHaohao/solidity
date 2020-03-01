@@ -421,6 +421,9 @@ void CommandLineInterface::outputResults()
             vector<ITask*> tasks = TaskFinder::findTasks(sourceCode.second, sourceUnit);
             for (auto task : tasks) {
                 vector<IReportItem*> reportItems = task->execute();
+                if (reportItems.size() == 0) {
+                    sout() << "No vulnerability detected." << endl;
+                }
                 for (auto reportItem : reportItems) {
                     reportItem->report();
                 }
