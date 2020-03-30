@@ -419,6 +419,9 @@ void CommandLineInterface::outputResults()
             sout() << endl << "======= " << sourceCode.first << " =======" << endl;
             const SourceUnit& sourceUnit = m_compiler->ast(sourceCode.first);
             vector<ITask*> tasks = TaskFinder::findTasks(sourceCode.second, sourceUnit);
+            if (tasks.size() == 0) {
+                sout() << "No property declared." << endl;
+            }
             for (auto task : tasks) {
                 vector<IReportItem*> reportItems = task->execute();
                 if (reportItems.size() == 0) {
